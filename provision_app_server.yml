@@ -1,0 +1,14 @@
+---
+  - name: provision
+    hosts: localhost
+    connection: localhost
+
+    roles:
+       - launch_app_server
+#    - s3cmd
+#    - rvm_io.rvm1-ruby
+#    - nginx-passenger
+#    - mysql
+#    - webserver
+
+

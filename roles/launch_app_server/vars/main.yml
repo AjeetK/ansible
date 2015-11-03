@@ -1,0 +1,8 @@
+---  
+instance_type: t2.micro
+security_group: prod-app-SG # Change the security group name here
+image: ami-96f1c1c4 # Change the AMI, from which you want to launch the server
+region: ap-southeast-1 # Change the Region
+keypair: production # Change the keypair name
+vpc_subnet_id: subnet-34600343
+count: 1

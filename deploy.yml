@@ -1,0 +1,6 @@
+---
+- name: deploy
+  hosts: launched
+  gather_facts: false
+  roles:
+    - deploy

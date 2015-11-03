@@ -1,0 +1,48 @@
+
+---
+- hosts: launched
+#  sudo: yes
+  remote_user: ubuntu
+  tasks:
+  - name: update apt
+    sudo: yes
+    apt: update_cache=yes
+
+ # - name: ensure public key and public one are present
+ #   sudo: yes
+ #   copy: src={{item}} dest=/home/ubuntu/.ssh/{{ item }} mode=0600
+ #   with_items:
+ #     - id_rsa.pub
+
+ # - name: ensure private key and public one are present
+ #   sudo: yes
+ #   copy: src={{item}} dest=/home/ubuntu/.ssh/{{ item }} mode=0600
+ #   with_items:
+ #     - id_rsa
+
+  - name: copy public and private key to api server
+  	copy: src=~/.ssh/id_rsa* dest=home/ubuntu/.ssh/
+#  - name: Deploy site files from Github repository
+#    sudo: yes
+#    git: repo=git@github.com:imlitech/imli-backend.git dest=/home/{{deploy_user}}/{{app_name}} key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
+#  - name: config database.yml
+#    template: src=database.yml.j2 dest={{ deploy_directory}}/config/database.yml
+
+  - name: bundle install
+    command: bundle install chdir={{ deploy_directory }}
+
+#  - name: sidekiq initializer
+#    command: bundle exec sidekiq -C ./config/sidekiq.yml RAILS_ENV="production" chdir={{deploy_directory}}
+
+  - name: migrate create
+    command: rake db:create RAILS_ENV="production" chdir={{ deploy_directory }}
+
+  - name: migrate migrate
+    command: rake db:migrate RAILS_ENV="production" chdir={{ deploy_directory }}
+
+#  - name: tmp clear
+#    command: bundle exec rake tmp:clear chdir={{ deploy_directory }}
+
+#  - name: restart app
+#    command: touch tmp/restart.txt chdir={{ deploy_directory¯ }}
+#  command: echo "{{deploy_directory}}"

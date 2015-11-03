@@ -1,0 +1,4 @@
+---
+# vars file for ansible-nginx-passenger
+webserver_name: test.trawly.in
+

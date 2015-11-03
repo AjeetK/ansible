@@ -1,0 +1,29 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+# Ex 1: Ungrouped hosts, specify before any group headers.
+
+#54.254.192.82
+
+# Ex 2: A collection of hosts belonging to the 'webservers' group
+
+[prod-app]
+prodapp1 ansible_ssh_host=54.254.192.82
+
+[webservers]
+
+test ansible_ssh_host=54.254.241.108
+54.179.159.33
+
+[launched]
+#54.169.238.221 ansible_ssh_private_key_file=~/.ssh/production.pem
+#54.254.216.238 ansible_ssh_private_key_file=~/.ssh/production.pem
+54.169.229.231 ansible_ssh_private_key_file=~/.ssh/production.pem
+

@@ -1,0 +1,14 @@
+- name: Install libraries
+  apt: name={{ item }} state=present
+  with_items:
+    - libpq-dev
+    - imagemagick
+    - gifsicle
+    - jhead
+    - jpegoptim
+    - libjpeg-progs
+    - optipng
+    - pngcrush
+    - pngquant
+    - libxslt-dev
+    - libxml2-dev 

@@ -1,0 +1,72 @@
+#VERSION: 0.0.3
+
+---
+- hosts: launched
+  sudo: yes
+
+
+  tasks:
+#  - name: update apt
+#    apt: update_cache=yes
+
+  - name: adding key
+    command: gpg --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
+  - name: export key
+    command: gpg --armor --export 561F9B9CAC40B2F7 | sudo apt-key add -
+
+
+  - name: install apt-transport-https
+    action: apt pkg=apt-transport-https state=installed
+
+  - name: add passenger repository
+    command: sudo sh -c "echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main' >> /etc/apt/sources.list.d/passenger.list"
+
+  - name: change the owner of pssenger.list
+    command: sudo chown root /etc/apt/sources.list.d/passenger.list
+
+  - name: change permission of passenger.list
+    command: sudo chmod 600 /etc/apt/sources.list.d/passenger.list
+
+  - name: update the cache
+    command: sudo apt-get update -y
+
+  - name: Installing nginx
+    apt:  name=nginx-full force=yes
+
+  - name: Installing passenger
+    apt: name=passenger force=yes
+
+
+  - name: Ensure passenger_root is set
+    lineinfile:
+      dest=/etc/nginx/nginx.conf
+      state=present
+      backup=yes
+      regexp='#?\s*passenger_root /usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini;'
+      line='passenger_root /usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini;'
+
+
+  - name: Ensure passenger_ruby is set
+    lineinfile:
+      dest=/etc/nginx/nginx.conf
+      state=present
+      backup=yes
+      backrefs=yes
+      regexp='#?\s*passenger_ruby /usr/bin/passenger_free_ruby;'
+      line='passenger_ruby /home/ubuntu/.rvm/gems/ruby-2.2.1/wrappers/ruby;'
+
+  - name: Remove the default app
+    sudo: yes
+    command: rm -rf /etc/nginx/sites-enabled/default
+
+  - name: Remove the default app config if exists
+    sudo: yes
+    command: rm -rf /etc/nginx/sites-enabled/default
+
+  - name: Configure nginx for the app
+    template: src=imlibackend.conf.j2 dest=/etc/nginx/conf.d/imlibackend.conf group=www-data owner=www-data force=yes
+
+  - name: Restart nginx
+  action: service name=nginx state=restarted
+
+

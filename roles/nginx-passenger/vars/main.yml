@@ -1,0 +1,5 @@
+---
+# vars file for ansible-nginx-passenger
+webserver_name: api.buyample.com
+
+

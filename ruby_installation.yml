@@ -1,0 +1,65 @@
+#VERSION: 0.0.3
+
+---
+- hosts: launched
+  sudo: yes
+
+
+  tasks:
+
+
+  - name: adding ppa
+    #command: sudo add-apt-repository ppa:chris-lea/node.js
+    apt_repository: repo='ppa:chris-lea/node.js' state=present
+
+  - name: update apt
+    apt: update_cache=yes
+
+  - name: installing required packages
+#    action: pkg={{item}}
+    apt: name={{ item }} state=present
+    with_items: 
+#      - git-core 
+      - curl
+      - zlib1g-dev 
+      - build-essential 
+      - libssl-dev 
+      - libreadline-dev 
+      - libyaml-dev 
+      - libxml2-dev 
+      - libxslt1-dev 
+      - libcurl4-openssl-dev 
+      - python-software-properties 
+      - libffi-dev
+      - libpq-dev
+
+  - name: Installs RVM (Ruby Version Manager) for handling Ruby installation
+    command: gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+  - name: curl the stable version of RVM
+    #action: shell curl -sSL https://get.rvm.io | bash -s stable creates=/home/ubuntu/.rvm/
+    action: shell curl -L https://get.rvm.io | bash -s stable creates=/home/ubuntu/.rvm/
+    args:
+      dest: ~/
+
+  - name: reload rvm script
+ #   action: source ~/.rvm/scripts/rvm
+    shell: source /home/ubuntu/.rvm/scripts/rvm
+    args:
+      executable: /bin/bash
+
+
+  - name: Installs Ruby
+    command: rvm install ruby-2.2.1
+
+  - name: use ruby 2.2.1
+    command: rvm install ruby-2.2.1
+
+  - name: adding gem --no-ri --no-rdoc to .gemrc file
+    command: "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc"
+
+  - name: install bundler
+    command: gem install bundler
+
+  - name: insalling rails
+    command: gem install rails -v 4.2.3

@@ -1,0 +1,7 @@
+app_name: imli-backend
+deploy_user: ubuntu
+deploy_directory: "/home/{{deploy_user }}/{{ app_name }}"
+ansible_ssh_user: ubuntu
+#mysql_db_name: "{{ app_name }}"
+#mysql_db_user: "{{ app_name }}"
+
