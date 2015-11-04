@@ -64,7 +64,7 @@
     command: rm -rf /etc/nginx/sites-enabled/default
 
   - name: Configure nginx for the app
-    template: src=/home/ubuntu/templateimlibackend.conf.j2 dest=/etc/nginx/conf.d/imlibackend.conf group=www-data owner=www-data force=yes
+    template: src=/home/ubuntu/templates/imlibackend.conf.j2 dest=/etc/nginx/conf.d/imlibackend.conf group=www-data owner=www-data force=yes
 
   - name: Restart nginx
     action: service name=nginx state=restarted

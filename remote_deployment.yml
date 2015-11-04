@@ -2,6 +2,7 @@
 ---
 - hosts: launched
 #  sudo: yes
+#  host_key_checking: false
   remote_user: ubuntu
 #  environment:
 #    ANSIBLE_HOST_KEY_CHECKING:  False
@@ -38,14 +39,12 @@
 #  - name: adding git ssh key to known host
 #    git: repo=git@github.com:imlitech/imli-backend.git  key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
 #  - name: ensure github is a known host
-#    sshknowhosts: host=github.com state=present
-
-
+#    command: ssh-keyscan -H github.com >> /home/ubuntu/.ssh/known_hosts
 
   - name: ensure github.com is a known host
     sudo: yes
     lineinfile:
-      dest: /root/.ssh/known_hosts
+      dest: /home/ubuntu/.ssh/known_hosts
       create: yes
       state: present
       line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
