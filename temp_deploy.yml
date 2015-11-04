@@ -1,6 +1,6 @@
 
 ---
-- hosts: launched
+- hosts: localhost
 #  sudo: yes
   remote_user: ubuntu
   tasks:
@@ -26,10 +26,10 @@
     sudo: yes
     git: repo=git@github.com:imlitech/imli-backend.git dest=/home/{{deploy_user}}/{{app_name}} key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
   - name: change database.yml file
-    template: src=database.yml.j2 dest={{ deploy_directory}}/config/database.yml
+    template: src=/home/ubuntu/templates/database.yml.j2 dest={{ deploy_directory}}/config/database.yml
 
   - name: change app_config.yml file
-    template: scr=app_config.yml.j2 dest={{deploy_directory}}/config/app_config.yml
+    template: src=/home/ubuntu/templates/app_config.yml.j2 dest={{deploy_directory}}/config/app_config.yml
 
 
   - name: bundle install

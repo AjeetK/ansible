@@ -12,3 +12,4 @@
     - pngquant
     - libxslt-dev
     - libxml2-dev 
+    - git

@@ -23,7 +23,5 @@ test ansible_ssh_host=54.254.241.108
 54.179.159.33
 
 [launched]
-#54.169.238.221 ansible_ssh_private_key_file=~/.ssh/production.pem
-#54.254.216.238 ansible_ssh_private_key_file=~/.ssh/production.pem
-54.169.229.231 ansible_ssh_private_key_file=~/.ssh/production.pem
+54.169.243.163 ansible_ssh_private_key_file=~/.ssh/production.pem
 
