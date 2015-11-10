@@ -1,0 +1,14 @@
+---
+  - name: provision frontend server
+    hosts: localhost
+    connection: localhost
+
+    roles:
+       - launch_frontend_server
+#    - s3cmd
+#    - rvm_io.rvm1-ruby
+#    - nginx-passenger
+#    - mysql
+#    - webserver
+
+

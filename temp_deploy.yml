@@ -23,7 +23,6 @@
 #  - name: copy public and private key to api server
 #  	copy: src=~/.ssh/id_rsa* dest=home/ubuntu/.ssh/
   - name: Deploy site files from Github repository
-    sudo: yes
     git: repo=git@github.com:imlitech/imli-backend.git dest=/home/{{deploy_user}}/{{app_name}} key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
   - name: change database.yml file
     template: src=/home/ubuntu/templates/database.yml.j2 dest={{ deploy_directory}}/config/database.yml

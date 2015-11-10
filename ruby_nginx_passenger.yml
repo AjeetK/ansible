@@ -6,8 +6,15 @@
 
 
   tasks:
-#  - name: update apt
-#    apt: update_cache=yes
+  - name: update apt
+    apt: update_cache=yes
+
+  - name: Set up authorized_keys for the deploy user
+    authorized_key: user=ubuntu
+                    key="{{ item }}"
+    with_file:
+      - /home/ubuntu/ssh_keys/tanmay.pub
+      - /home/ubuntu/ssh_keys/ajeet.pub
 
   - name: adding key
     command: gpg --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7

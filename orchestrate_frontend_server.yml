@@ -1,0 +1,131 @@
+#VERSION: 0.0.3
+
+---
+- hosts: launched_frontend
+#  sudo: yes
+#  remote_user: ubuntu
+  environment:
+     PATH: $HOME/local/node/bin:$PATH
+     NODE_PATH: $HOME/local/node/lib/node_modules 
+
+  tasks:
+  - name: update apt
+    become: yes
+    become_method: sudo
+    apt: update_cache=yes
+
+  - name: Set up authorized_keys for the deploy user
+    authorized_key: user=ubuntu
+                    key="{{item}}"
+    with_file:
+      - /home/ubuntu/ssh_keys/tanmay.pub
+      - /home/ubuntu/ssh_keys/ajeet.pub
+
+  - name: copy node installation script to remote server
+#    become: yes
+#    become_method: sudo
+#    remote_user: ubuntu
+    copy: src=/home/ubuntu/install-nodejs.sh dest=/home/ubuntu/
+  
+  - name: installing node via script
+    shell: /home/ubuntu/install-nodejs.sh 
+
+  - name: Install git
+    become: yes
+    become_method: sudo
+    apt: pkg={{item}} state=present
+    with_items:
+#      - nodejs-legacy
+#      - npm
+      - git
+
+  - name: Installing ember-cli and bower
+    become: yes
+    become_method: sudo   
+    npm: name={{item}} executable=/usr/bin/npm global=yes
+    with_items:
+      - bower
+      - ember-cli
+
+
+  - name: make .ssh directory
+    file: path=/home/ubuntu/.ssh state=directory
+
+  - name: copy public and private key to api server
+    copy: src=~/.ssh/id_rsa dest=/home/ubuntu/.ssh/ mode=0600
+
+  - name: copy public and private key to api server
+    copy: src=~/.ssh/id_rsa.pub dest=/home/ubuntu/.ssh/
+
+  - name: Deploy site files from Github repository
+    git: repo=git@github.com:imlitech/erp-frontend.git dest=/home/ubuntu/erp-frontend key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
+
+#  - name: copy node installation script to remote server
+#    synchronize: src=/home/ubuntu/frontend_deploy.sh dest=/home/ubuntu/
+
+#  - name: installing node via script
+#    command: ./frontend_deploy.sh
+#  - name: creating symlink for bower
+#    become: yes
+#    become_method: sudo
+#    command: ln -s /usr/bin/env /home/ubuntu/local/node/bin/node
+#  - name: copy frontend deployment script to remote server
+#    synchronize: src=/home/ubuntu/frontend_deploy.sh dest=/home/ubuntu/
+
+#  - name: installing node via script
+#    shell: /home/ubuntu/frontend_deploy.sh
+
+  - name: Running bower install
+    bower: path=/home/ubuntu/erp-frontend
+#    remote_user: ubuntu
+#    command: "/home/ubuntu/local/node/bin/node bower install"
+#    shell: "bower install"
+#    args:
+#      chdir: /home/ubuntu/erp-frontend
+#      executable: /home/ubuntu/local/node/bin/npm
+
+  - name: Running npm install
+#    command: "/home/ubuntu/local/node/bin/node npm install"
+#    args:
+#      chdir: /home/ubuntu/erp-frontend
+#      executable: /home/ubuntu/local/node/bin/npm
+#    sudo: no
+#    become_method: sudo
+    npm: path=/home/ubuntu/erp-frontend
+  - name: Building app
+    command: "ember build --production"
+    args:
+      chdir: /home/ubuntu/erp-frontend
+#      executable: /
+
+  - name: Installing nginx
+    become: yes
+    become_method: sudo
+    apt: pkg=nginx state=installed update_cache=true
+
+
+  - name: Remove the default app conf
+    become: yes
+    become_method: sudo
+    file: path=/etc/nginx/sites-enabled/default state=absent
+
+  - name: Remove the default app config if exists
+    become: yes
+    become_method: sudo
+    file: path=/etc/nginx/sites-available/default state=absent
+
+  - name: Configure nginx for the app
+    sudo: yes
+    become_method: sudo
+    template: src=/home/ubuntu/templates/erp-frontend.conf.j2 dest=/etc/nginx/conf.d/erp-frontend.conf  force=yes
+
+  - name: Ensure nginx only read conf file in conf.d directory
+    become: yes
+    become_method: sudo
+    lineinfile:
+      dest=/etc/nginx/nginx.conf
+      line='	include /etc/nginx/sites-enabled/*;'
+    become: yes
+    become_method: sudo
+    lineinfile:
+      dest=/etc/nginx/nginx.conf

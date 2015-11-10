@@ -51,7 +51,7 @@
       regexp: "^github\\.com"
   
   - name: bundle install
-    command: bundle install chdir={{ deploy_directory }}
+    command: bundle install chdir={{deploy_directory}}
 
 #  - name: sidekiq initializer
 #    command: bundle exec sidekiq -C ./config/sidekiq.yml RAILS_ENV="production" chdir={{deploy_directory}}
