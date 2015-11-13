@@ -23,12 +23,18 @@
 #  - name: copy public and private key to api server
 #  	copy: src=~/.ssh/id_rsa* dest=home/ubuntu/.ssh/
   - name: Deploy site files from Github repository
-    git: repo=git@github.com:imlitech/imli-backend.git dest=/home/{{deploy_user}}/{{app_name}} key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=release
+    git: repo=git@github.com:imlitech/imli-backend.git dest=/home/{{deploy_user}}/{{app_name}} key_file=/home/ubuntu/.ssh/id_rsa accept_hostkey=yes force=yes version=develop
+
   - name: change database.yml file
     template: src=/home/ubuntu/templates/database.yml.j2 dest={{ deploy_directory}}/config/database.yml
 
+  - name: change supply_chain_engine_config.yml
+    template: src=/home/ubuntu/templates/supply_chain_engine_config.yml.j2 dest={{ deploy_directory}}/engines/supply_chain_engine/config/supply_chain_engine_config.yml
+
   - name: change app_config.yml file
     template: src=/home/ubuntu/templates/app_config.yml.j2 dest={{deploy_directory}}/config/app_config.yml
+
+
 
 
   - name: bundle install

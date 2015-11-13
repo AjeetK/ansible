@@ -25,13 +25,15 @@ test ansible_ssh_host=54.254.241.108
 [launched]
 #54.169.243.163 ansible_ssh_private_key_file=~/.ssh/production.pem
 #54.169.221.229 ansible_ssh_private_key_file=~/.ssh/production.pem host_key_checking=False
-54.169.232.128 ansible_ssh_private_key_file=~/.ssh/production.pem
-
+#54.169.232.128 ansible_ssh_private_key_file=~/.ssh/production.pem
+54.169.228.142 ansible_ssh_private_key_file=~/.ssh/production.pem
 
 [launched_frontend]
 #54.254.135.218 ansible_ssh_private_key_file=~/.ssh/production.pem
 #54.254.213.95 ansible_ssh_private_key_file=~/.ssh/production.pem
 #54.169.243.245 ansible_ssh_private_key_file=~/.ssh/production.pem
 #54.179.160.121 ansible_ssh_private_key_file=~/.ssh/production.pem
-54.169.248.37 ansible_ssh_private_key_file=~/.ssh/production.pem
+#54.169.248.37 ansible_ssh_private_key_file=~/.ssh/production.pem
+54.169.225.95 ansible_ssh_private_key_file=~/.ssh/production.pem
+54.169.228.142 ansible_ssh_private_key_file=~/.ssh/production.pem
 

@@ -4,10 +4,6 @@
 - hosts: launched_frontend
 #  sudo: yes
 #  remote_user: ubuntu
-  environment:
-     PATH: $HOME/local/node/bin:$PATH
-     NODE_PATH: $HOME/local/node/lib/node_modules 
-
   tasks:
   - name: update apt
     become: yes
@@ -25,7 +21,7 @@
 #    become: yes
 #    become_method: sudo
 #    remote_user: ubuntu
-    copy: src=/home/ubuntu/install-nodejs.sh dest=/home/ubuntu/
+    copy: src=/home/ubuntu/install-nodejs.sh dest=/home/ubuntu/ mode=0755
   
   - name: installing node via script
     shell: /home/ubuntu/install-nodejs.sh 
@@ -39,10 +35,19 @@
 #      - npm
       - git
 
+  - name: source bashrc
+    sudo: no   
+    shell: . /home/ubuntu/.bashrc
+
+  - name: echo node_path and path shell variable
+    shell: echo $NODE_PATH
+    register: my_var
+
+  - debug: var=my_var
   - name: Installing ember-cli and bower
     become: yes
     become_method: sudo   
-    npm: name={{item}} executable=/usr/bin/npm global=yes
+    npm: name={{item}} executable=/home/ubuntu/local/node/bin/npm global=yes
     with_items:
       - bower
       - ember-cli
@@ -75,27 +80,29 @@
 #  - name: installing node via script
 #    shell: /home/ubuntu/frontend_deploy.sh
 
-  - name: Running bower install
-    bower: path=/home/ubuntu/erp-frontend
+#  - name: Running bower install
+#    bower: path=/home/ubuntu/erp-frontend executable=/home/ubuntu/local/node/lib/node_modules
 #    remote_user: ubuntu
-#    command: "/home/ubuntu/local/node/bin/node bower install"
+#    become: yes
+#    become_method: sudo
+#    command: "/home/ubuntu/local/node/lib/node_modules bower install"
 #    shell: "bower install"
 #    args:
 #      chdir: /home/ubuntu/erp-frontend
 #      executable: /home/ubuntu/local/node/bin/npm
 
-  - name: Running npm install
+#  - name: Running npm install
 #    command: "/home/ubuntu/local/node/bin/node npm install"
 #    args:
 #      chdir: /home/ubuntu/erp-frontend
 #      executable: /home/ubuntu/local/node/bin/npm
 #    sudo: no
 #    become_method: sudo
-    npm: path=/home/ubuntu/erp-frontend
-  - name: Building app
-    command: "ember build --production"
-    args:
-      chdir: /home/ubuntu/erp-frontend
+#    npm: path=/home/ubuntu/erp-frontend
+#  - name: Building app
+#    command: "ember build --production"
+#    args:
+#      chdir: /home/ubuntu/erp-frontend
 #      executable: /
 
   - name: Installing nginx
@@ -125,7 +132,4 @@
     lineinfile:
       dest=/etc/nginx/nginx.conf
       line='	include /etc/nginx/sites-enabled/*;'
-    become: yes
-    become_method: sudo
-    lineinfile:
-      dest=/etc/nginx/nginx.conf
+      state=absent
